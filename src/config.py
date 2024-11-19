@@ -1,7 +1,9 @@
 # Libraries
+
 from pathlib import Path
 
 # Paths
+
 raw_data = 'raw_data.csv'
 clean_data = 'clean_data.csv'
 model_file = 'model.pkl'
@@ -21,6 +23,7 @@ print("model path", model_path)
 print("results path", results_path)
 
 # Preprocessing
+
 numerical_columns = [
     'tenure',
     'MonthlyCharges',
@@ -52,6 +55,13 @@ nominal_columns = [
 ]
 
 categorical_columns = ordinal_columns + binary_columns + nominal_columns
+
+binary_mappings = {
+    'gender': {'Male': 1, 'Female': 0},
+    'status': {'Active': 1, 'Inactive': 0},
+    'PaperlessBilling': {'Yes': 1, 'No': 0}
+}
+
 
 # Missing Values Imputation
 
