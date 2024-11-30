@@ -44,16 +44,17 @@ def summary_info(df):
     Clean Summary of df containing:
     - Column name
     - Data type
-    - Non-null percetage values
-    - Null percetage values
+    - Non-null percentage values
+    - Null percentage values
     - Unique values
 
     Parameters:
-        df (pd.DataFrame): DataFrame to analize
+        df (pd.DataFrame): DataFrame to analyze
 
     Returns:
-        pd.DataFrame: Summarized dataframe
+        pd.DataFrame.style: Summarized DataFrame with styles applied
     """
+    # create summary
     summary = pd.DataFrame({
         "Column": df.columns,
         "Non-Null Count": df.notnull().sum(),
@@ -62,11 +63,26 @@ def summary_info(df):
         "Data Type": df.dtypes
     })
 
+    # sort by missing values %
     summary = summary.sort_values(by="Missing %", ascending=False).reset_index(drop=True)
 
+    # format numeric columns
     summary["Missing %"] = summary["Missing %"].round(2)
-    
-    display(summary)
+    summary["Non-Null Count"] = summary["Non-Null Count"].apply(lambda x: f"{x:,.0f}")
+    summary["Unique Values"] = summary["Unique Values"].apply(lambda x: f"{x:,.0f}")
+
+    # apply styles
+    styled_summary = (
+        summary.style
+        .set_properties(**{'text-align': 'center'})  # center columns
+        .hide(axis = 'index')  # hide index
+        .set_table_styles([  # center headers
+            {"selector": "th", "props": [("text-align", "center")]}
+        ])
+    )
+
+    # show styled table
+    display(styled_summary)
     
 # Analyze uniqueness of categorical features
 def uniqueness_categorical_columns(df, max_categories = 10):
@@ -93,7 +109,16 @@ def uniqueness_categorical_columns(df, max_categories = 10):
             'Percentage': distribution_top.values
         })
         
-        display(table.style.format({'Percentage': "{:.2f}%"}))
+        # Apply format and style
+        
+        styled_table = (
+            table.style
+            .format({'Percentage': "{:.2f}%"}) # percentage format
+            .set_properties(**{'text-align': 'center'}) # center columns
+            .hide(axis = "index") # hidde index for cleanliness
+        )
+        
+        display(styled_table)
         
         if len(distribution) > max_categories:
             print(f'... showing the top {max_categories} most common values')
@@ -215,3 +240,32 @@ def missing_values_by_date_pivot(df, date_col, return_type="count", percentage_b
         result = result.iloc[:, -num_dates:]
 
     return result
+
+# Formating de celdas
+def format_cell(val):
+    """
+    Formatea valores para mostrar en tablas:
+    - Enteros con separadores de miles.
+    - Flotantes con dos decimales.
+    - Valores nulos como "N/A".
+    
+    Parameters:
+        val: Cualquier valor de entrada.
+
+    Returns:
+        str: Representación formateada del valor.
+    """
+    import pandas as pd
+    
+    if pd.isnull(val):  # Manejo de valores nulos
+        return "N/A"
+    elif isinstance(val, (int, float)):  # Manejo de valores numéricos
+        if isinstance(val, int) or val == int(val):  # Enteros
+            return f"{int(val):,}"
+        else:  # Flotantes
+            return f"{val:,.2f}"
+    return str(val)  # Para otros tipos, convertir a cadena directamente
+
+# Función para centrar
+def center_align(val):
+    return 'text-align: center;'
