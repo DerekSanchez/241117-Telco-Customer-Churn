@@ -1,10 +1,35 @@
-# Libraries
+# ===============================
+# Libraries and Configuration
+# ===============================
 
 import pandas as pd
 import src.config as cf
 from sklearn.preprocessing import MinMaxScaler
 
-# Missing Values
+# ===============================
+# Feature Selection
+# ===============================
+
+def feature_selection(df):
+    to_drop = [
+        
+    ]
+    
+    df
+    
+
+# ===============================
+# Feature Engineering
+# ===============================
+
+# ===============================
+# Outlier Detection
+# ===============================
+
+
+# ===============================
+# Missing Values Handling
+# ===============================
 
 def missing_values_prep(df):
     
@@ -22,6 +47,10 @@ def missing_values_prep(df):
     
     return df
 
+# ===============================
+# Encoding Categorical Nominal
+# ===============================
+
 def encode_categorical_columns(df):
     # Encodes categorical columns. One-hot for nominals, mappings for binary/ordinals
 
@@ -32,3 +61,15 @@ def encode_categorical_columns(df):
    # for col in cf.binary_columns:
    #     df[col] =
    return 1
+
+# ===============================
+# Encoding Categorical Binary
+# ===============================
+
+# ===============================
+# Encoding Categorical Ordinal
+# ===============================
+
+# ===============================
+# Data Augmentation
+# ===============================
