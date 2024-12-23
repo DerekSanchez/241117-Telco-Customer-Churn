@@ -1,8 +1,17 @@
+
+# ===============================
+# Libraries and Configurations
+# ===============================
+
+# -------------------------------
 # Libraries
+# -------------------------------
 
 from pathlib import Path
 
+# -------------------------------
 # Paths
+# -------------------------------
 
 raw_data = 'raw_data.csv'
 clean_data = 'clean_data.csv'
@@ -22,7 +31,10 @@ print("clean data path:", clean_data_path)
 print("model path", model_path)
 print("results path", results_path)
 
-# Preprocessing
+
+# ===============================
+# Metadata
+# ===============================
 
 numerical_columns = [
     'tenure',
@@ -56,6 +68,27 @@ nominal_columns = [
 
 categorical_columns = ordinal_columns + binary_columns + nominal_columns
 
+
+# ===============================
+# Preprocessing
+# ===============================
+
+# -------------------------------
+# Feature Selection
+# -------------------------------
+
+num_features_to_drop = [
+    
+]
+
+cat_features_to_drop = [
+    
+]
+
+# -------------------------------
+# Encoding
+# -------------------------------
+
 binary_mappings = {
     'gender': {'Male': 1, 'Female': 0},
     'status': {'Active': 1, 'Inactive': 0},
@@ -63,17 +96,37 @@ binary_mappings = {
 }
 
 
-# Missing Values Imputation
+# -------------------------------
+# Missing Values Handling
+# -------------------------------
 
 imputation_strategies = {
     
 }
 
 
-# Data split
+# -------------------------------
+# Data Split
+# -------------------------------
+
 test_size = 0.2
 random_state = 123
 
-# Plot configuration
+
+# ===============================
+# Model Hyperparameters
+# ===============================
+
+
+
+
+# ===============================
+# Other Configurations
+# ===============================
+
+# -------------------------------
+# Plot Configuration
+# -------------------------------
+
 plot_style = 'seaborn-darkgrid'
 fig_size = (10, 6)
