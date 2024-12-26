@@ -17,12 +17,13 @@ sys.path.append(str(project_root))
 # -------------------------------
 
 import pandas as pd
+import numpy as np
 import src.config as cf
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 
 # -------------------------------
-# Raise Error for Necessary Columns
+# Raise Error for Necessary Columns for Prep Step
 # -------------------------------
 
 class MissingColumnError(Exception):
@@ -60,6 +61,14 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
         Drop irrelevant features from dataset
         """
         X_copy = X.copy()
+        
+        # verify if needed columns exist in data
+        required_columns = self.dropped_features
+        missing_columns = [col for col in required_columns if col not in X_copy.columns]
+
+        if missing_columns:
+            raise MissingColumnError(missing_columns)
+        
         X_copy = X_copy.drop(columns = self.dropped_features, errors = 'ignore')
         
         return X_copy
@@ -73,7 +82,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
 # Feature Engineering
 # ===============================
 
-class FeatureEgineering(BaseEstimator, TransformerMixin):
+class FeatureEngineering(BaseEstimator, TransformerMixin):
     """
     Feature Engineering including:
         - Creation of new columns
@@ -97,7 +106,13 @@ class FeatureEgineering(BaseEstimator, TransformerMixin):
         X_copy = X.copy()
         
         # verify if needed columns exist in data
-        required_columns = []
+        required_columns = [
+            'tenure',
+            'MonthlyCharges',
+            'InternetService',
+            'MultipleLines',
+            'OnlineSecurity'
+        ]
         missing_columns = [col for col in required_columns if col not in X_copy.columns]
         
         if missing_columns:
@@ -108,6 +123,26 @@ class FeatureEgineering(BaseEstimator, TransformerMixin):
         
         # create new column: RevenueAdjustment
         X_copy['RevenueAdjustment'] = X_copy['TotalCharges'] - X_copy['TotalCost']
+        
+        # create new column: log monthly charges
+        X_copy['LogMonthlyCharges'] = X_copy['MonthlyCharges'].apply(
+            lambda x: np.log(x) if pd.notnull(x) and x > 0 else 0)
+        
+        # column values simplification: InternetService
+        X_copy['InternetService'] = X_copy['InternetService'].replace(
+            {'Fiber optic': 'Yes',
+             'DSL' : 'Yes'}
+            )
+        
+        # column values simplification: MultipleLines
+        X_copy['MultipleLines'] = X_copy['MultipleLines'].replace(
+            {'No phone service': 'No'}
+            )
+        
+        # column values simplification: OnlineSecurity
+        X_copy['OnlineSecurity'] = X_copy['OnlineSecurity'].replace(
+            {'No internet service': 'No'}
+            )
         
         
 
