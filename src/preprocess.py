@@ -56,6 +56,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
         self.dropped_features = cf.cat_features_to_drop + cf.num_features_to_drop
         
         return self
+    
     def transform(self, X):
         """
         Drop irrelevant features from dataset
@@ -76,6 +77,45 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
 # ===============================
 # Data Cleaning
 # ===============================
+
+class DataCleaning(BaseEstimator, TransformerMixin):
+    """
+    Data Cleaning Class:
+        - Data type adjustment
+        - Handling inconsisting labels
+        - Stadardize columns in inconsisten formatting
+    """
+    
+    def __init__(self):
+        pass
+    
+    def fit(self, X):
+        """
+        Fit Data Cleaning computations
+        """
+        return self
+    
+    def transform(self, X):
+        X_copy = X.copy()
+        
+        required_columns = [
+            'TotalCharges'
+        ]
+        
+        missing_columns = [col for col in required_columns if col not in X_copy.columns]
+        
+        if missing_columns:
+            raise MissingColumnError(missing_columns)
+        
+        # adjust data type
+        X_copy['TotalCharges'] = pd.to_numeric(X_copy['TotalCharges'], errors = 'coerce')
+
+        # adjust spaces in string columns
+        object_columns = X_copy.select_dtypes(include = 'object').columns
+        for col in object_columns:
+            X_copy[col] = X_copy[col].str.strip()
+    
+        return X_copy
 
 
 # ===============================
@@ -144,14 +184,83 @@ class FeatureEngineering(BaseEstimator, TransformerMixin):
             {'No internet service': 'No'}
             )
         
-        
-
+        return X_copy
 
 # ===============================
 # Outlier Detection
 # ===============================
 
+class OutlierDetector(BaseEstimator, TransformerMixin):
+    """
+    Outlier detection based on Inter Quartile Range (IQR)
+    - Identifies values outside the range defined by the threshold
+    - allows the user to identify or eliminate outliers
+    """
+    
+    def __init__(self, multiplier = 1.5 , action = 'remove'):
+        """
+        Parameters:
+            multiplier (float): multiplier for IQR. default is 1.5
+            action (str): defines what to do with the outlier:
+                - 'remove' to delete them
+                - 'cap' to cap them
+                - 'flag' to flag them  
+        """
+        self.multiplier = multiplier
+        self.action = action
 
+    def fit(self, X, y = None):
+        """
+        Fits necessary statisctis (mean and sd)
+        """
+        numerical_cols = X.select_dtypes(include = ['int64', 'float64']).columns
+        self.q1 = X[numerical_cols].quantile(0.25)
+        self.q3 = X[numerical_cols].quantile(0.75)
+        self.iqr = self.q3 - self.q1 
+        
+        # compute limits
+        self.lower_bound = self.q1 - self.multiplier * self.iqr
+        self.upper_bound = self.q3 + self.multiplier * self.iqr
+        
+        return self
+    
+    def transform(self, X):
+        """
+        Applies outlier detection and handling as specified
+        """
+        X_copy = X.copy()
+        
+        # select numerical columns
+        numeric_cols = X_copy.select_dtypes(include = ['int64', 'float64']).columns
+        
+        # raise error if not in the dataset
+        required_columns = numeric_cols
+        missing_columns = [col for col in required_columns if col not in X_copy.columns]
+        
+        if missing_columns:
+            raise MissingColumnError(missing_columns)
+        
+        # identify outliers
+        outliers = (X_copy[numeric_cols] < self.lower_bound) | (X_copy[numeric_cols] > self.upper_bound)
+        
+        if self.action == 'remove':
+            # remove rows with outliers
+            X_copy = X_copy[~outliers.any(axis = 1)]
+            
+        elif self.action == 'cap':
+            # cap values
+            X_copy[numeric_cols] = X_copy[numeric_cols].clip(self.lower_bound, self.upper_bound, axis = 1)
+        
+        elif self.action == 'flag':
+            # create a column indicating the presence of outliers
+            X_copy['outlier_flag'] = outliers.any(axis = 1)
+        
+        return X_copy
+            
+         
+        
+        
+        
 # ===============================
 # Missing Values Handling
 # ===============================
@@ -201,35 +310,3 @@ def encode_categorical_columns(df):
 
 
 
-
-# ===============================
-# Test Block
-# ===============================
-
-if __name__ == "__main__":
-    import pandas as pd
-    import src.config as cf
-
-    # Crear un ejemplo de DataFrame para pruebas
-    data = {
-        'feature1': [1, 2, 3],
-        'feature2': [4, 5, 6],
-        'feature3': ['A', 'B', 'C'],
-        'feature4': ['X', 'Y', 'Z'],
-        'target': [0, 1, 0]
-    }
-    df = pd.DataFrame(data)
-
-    # Definir listas en config temporalmente para prueba
-    cf.num_features_to_drop = ['feature1', 'feature2']
-    cf.cat_features_to_drop = ['feature3']
-
-    # Probar la clase FeatureSelector
-    selector = FeatureSelector()
-    selector.fit(df)
-    transformed_df = selector.transform(df)
-
-    print("Original DataFrame:")
-    print(df)
-    print("\nDataFrame después de Feature Selection:")
-    print(transformed_df)
