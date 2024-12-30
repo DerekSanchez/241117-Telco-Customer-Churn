@@ -33,43 +33,6 @@ print("results path", results_path)
 
 
 # ===============================
-# Metadata
-# ===============================
-
-numerical_columns = [
-    'tenure',
-    'MonthlyCharges',
-    'TotalCharges']
-
-ordinal_columns = [
-    'Contract'
-]
-
-binary_columns = [
-    'gender',
-    'Partner',
-    'Dependents',
-    'PhoneService',
-    'PaperlessBilling',
-    'Churn'
-]
-
-nominal_columns = [
-    'InternetService',
-    'PaymentMethod',
-    'MultipleLines',
-    'OnlineSecurity',
-    'OnlineBackup',
-    'DeviceProtection',
-    'TechSupport',
-    'StreamingTV',
-    'StramingMovies'
-]
-
-categorical_columns = ordinal_columns + binary_columns + nominal_columns
-
-
-# ===============================
 # Preprocessing
 # ===============================
 
@@ -86,23 +49,48 @@ cat_features_to_drop = [
 ]
 
 # -------------------------------
-# Encoding
-# -------------------------------
-
-binary_mappings = {
-    'gender': {'Male': 1, 'Female': 0},
-    'status': {'Active': 1, 'Inactive': 0},
-    'PaperlessBilling': {'Yes': 1, 'No': 0}
-}
-
-
-# -------------------------------
 # Missing Values Handling
 # -------------------------------
 
 imputation_strategies = {
-    
+    "numerical" : "median",
+    "categorical" : "mode"
 }
+
+# -------------------------------
+# Encoding
+# -------------------------------
+
+binary_mappings = {
+    'gender': {'Male' : 1, 'Female' : 0},
+    'partner': {'Yes' : 1, 'No' : 0},
+    'dependents' : {'Yes' : 1, 'No' : 0},
+    'PhoneService' : {'Yes' : 1, 'No' : 0},
+    # not originally binary, but modified to be in Feature Engineering
+    'MultipleLines' : {'Yes' : 1, 'No' : 0},
+    'InternetService' : {'Yes' : 1, 'No' : 0},
+    'OnlineSecurity' : {'Yes' : 1, 'No' : 0},
+    'PaperlessBilling': {'Yes': 1, 'No': 0},
+    'Churn': {'Yes' : 1, 'No' : 0}
+}
+
+ordinal_mappings = {
+    'Contract':{
+        'Month-to-month': 0,
+        'Two year': 1,
+        'One year': 2
+    }
+}
+
+nominal_columns = [
+    'PaymentMethod', 
+    'OnlineBackup',
+    'DeviceProtection',
+    'TechSupport',
+    'StreamingTV',
+    'StreamingMovies',
+    ]
+
 
 
 # -------------------------------

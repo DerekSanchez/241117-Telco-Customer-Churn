@@ -21,6 +21,8 @@ import numpy as np
 import src.config as cf
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
+from imblearn.over_sampling import SMOTE
+
 
 # -------------------------------
 # Raise Error for Necessary Columns for Prep Step
@@ -184,6 +186,7 @@ class FeatureEngineering(BaseEstimator, TransformerMixin):
             {'No internet service': 'No'}
             )
         
+        
         return X_copy
 
 # ===============================
@@ -256,57 +259,208 @@ class OutlierDetector(BaseEstimator, TransformerMixin):
             X_copy['outlier_flag'] = outliers.any(axis = 1)
         
         return X_copy
-            
-         
-        
-        
         
 # ===============================
 # Missing Values Handling
 # ===============================
 
-def missing_values_prep(df):
+class MissingValuesHandler(BaseEstimator, TransformerMixin):
+    """
+    Handles missing values using strategies defined in config.py or manual overrides
+    """
+    def __init__(self, numerical_strategy =  None, categorical_strategy = None):
+        """
+        Parameters:
+            - numerical_strategy (str): Strategy for numerical columns ('mean', 'median')
+            - categorical_strategy (str): Strategy for numerical columns ('mode')
+        """
+        # use config default if no arguments are provided
+        self.numerical_strategy =  numerical_strategy or cf.imputation_strategies['numerical']
+        self.categorical_strategy =  categorical_strategy or cf.imputation_strategies['categorical']
+
+    def fit(self, X, y = None):
+        """
+        Fits necessary statistics for imputation
+        """
+        self.numerical_cols = X.select_dtypes(include = ['int64', 'float64']).columns
+        self.categorical_cols = X.select_dtypes(include = 'object').columns
+        
+        # fit numerical imputation
+        if self.numerical_strategy == 'mean':
+            self.num_fill_values = X[self.numerical_cols].mean()
+        elif self.numerical_strategy == 'median':
+            self.num_fill_values = X[self.numerical_cols].median()
+        
+        # fit categorical imputation
+        if self.categorical_strategy == 'mode':
+            self.cat_fill_values = X[self.categorical_cols].mode().iloc[0]
+        
+        return self
+        
+    def transform(self, X):
+        """
+        Applies imputation to missing values
+        """
+        
+        X_copy = X.copy()
+        
+        # impute numerical columns
+        X_copy[self.numerical_cols] = X_copy[self.numerical_cols].fillna(self.num_fill_values)
+        
+        # impute categorical columns
+        X_copy[self.categorical_cols] = X_copy[self.categorical_cols].fillna(self.cat_fill_values)
+        
+        return X_copy
+        
+# ===============================
+# Encoding Categorical
+# ===============================
+
+class CategoricalEncoder(BaseEstimator, TransformerMixin):
+    """
+    Categorical feature encoding for binary, ordinal and nominal
+    """
     
-    # Imputing numerical columns
-    if cf.imputation_strategies['numerical'] == 'median':
-        for col in cf.numerical_columns:
-            median_value = df[col].median()
-            df[col].fillna(median_value, inplace = True)
+    def __init__(self):
+        pass
     
-    # Imputing categorical columns
-    if cf.imputation_strategies['categorical'] == 'mode':
-        for col in cf.categorical_columns:
-            mode_value = df[col].mode()[0]
-            df[col].fillna(mode_value, inplace = True)
+    def fit(self, X, y = None):
+        """
+        fitting if necessary
+        """
+        return self
     
-    return df
+    def transform(self, X):
+        """
+        Apply the enconding
+        """
+        X_copy = X.copy()
+        
+        # binary encoding
+        for col, mapping in cf.binary_mappings.items():
+            if col in X_copy.columns:
+                X_copy[col] = X_copy[col].map(mapping)
+                print(f'binary encoding applied to : {col}')
+                
+        # ordinal encoding
+        for col, mapping in cf.ordinal_mappings.items():
+            if col in X_copy.columns:
+                X_copy[col] = X_copy[col].map(mapping)
+                print(f'ordinal encoding applied to : {col}')
+        
+        # nominal encoding (one-hot)
+        for col in cf.nominal_columns:
+            if col in X_copy.columns:
+                dummies = pd.get_dummies(X_copy[col], prefix = col)
+                X_copy = pd.concat([X_copy, dummies], axis = 1)
+                X_copy.drop(columns = [col], inplace = True)
+                print(f'one - hot encoding applied to : {col}')
+                
+        return X_copy
 
 # ===============================
-# Encoding Categorical Nominal
+# Scaling
 # ===============================
 
-def encode_categorical_columns(df):
-    # Encodes categorical columns. One-hot for nominals, mappings for binary/ordinals
-
-    # Binary
+class Scaling(BaseEstimator, TransformerMixin):
+    """
+    Scaling of set
+    Scales features to range [0, 1] by default
+    """
     
-  #  binary_mappings
+    def __init__(self, feature_range = (0, 1)):
+        """
+        Parameters:
+            - feature_range (tuple): Desired range of tranformed data 
+        """
+        self.feature_range = feature_range
+        self.scaler = MinMaxScaler(feature_range = self.feature_range)
+        self.numerical_cols = None
     
-   # for col in cf.binary_columns:
-   #     df[col] =
-   return 1
-
-# ===============================
-# Encoding Categorical Binary
-# ===============================
-
-# ===============================
-# Encoding Categorical Ordinal
-# ===============================
-
+    def fit(self, X, y = None):
+        """
+        Fit the MinMaxScaler
+        """
+        self.numerical_cols = X.select_dtypes(include = ['int64', 'float64']).columns
+        self.scaler.fit(X[self.numerical_cols])
+        return self
+        
+    def transform(self, X):
+        """
+        Transform the numerical features using the Min-Max Scaling
+        """
+        
+        X_copy = X.copy()
+        
+        # raise error if numerical columns not present
+        required_columns = self.numerical_cols
+        missing_columns = [col for col in required_columns if col not in X_copy.columns]
+        
+        if missing_columns:
+            raise MissingColumnError(missing_columns)
+        
+        # apply scaling
+        X_copy[self.numerical_cols] = self.scaler.transform(X_copy[self.numerical_cols])
+        
+        return X_copy
+        
+        
 # ===============================
 # Data Augmentation
 # ===============================
+
+class DataAugmentation(BaseEstimator, TransformerMixin):
+    """
+    Data Augmentation for tabular data
+    """
+    
+    def __init__(self, method = 'smote', target_col = None, active = True, k_neighbors = 1):
+        """
+        Parameters:
+            - method (str): 'oversample' or 'smote'
+            - target_col (str): target column name
+            - active (bool): if False, does not apply Data Augmentation
+            - k_neighbors (int): number of neighbors for SMOTE 
+        """
+        self.method = method
+        self.target_col = target_col
+        self.active = active
+        self.k_neighbors = k_neighbors
+        self.sampler = None
+        
+    def fit(self, X, y = None):
+        if self.active:
+            if self.method == 'smote':
+                self.sampler = SMOTE(k_neighbors = self.k_neighbors)
+            elif self.method == 'oversample':
+                self.sampler == 'oversample'
+        return self
+
+    def transform(self, X):
+        if not self.active:
+            # if not active, return data as original
+            return X
+        
+        # target feature split
+        X_copy = X.copy()
+        y = X_copy[self.target_col]
+        X_features = X_copy.drop(columns = [self.target_col])
+        
+        if self.method == 'smote':
+            X_resampled, y_resampled = self.sampler.fit_resample(X_features, y)
+            X_resampled[self.target_col] = y_resampled
+            return X_resampled
+
+        elif self.method == 'oversample':
+            majority_class = y.value_counts().idxmax()
+            minority_class = y.value_counts().idxmin()
+            
+            X_minority = X_copy[X_copy[self.target_col] == minority_class]
+            oversampled_minority = X_minority.sample(len(X_copy[X_copy[self.target_col] == majority_class]), replace = True)
+            
+            X_resampled = pd.concat([X_copy, oversampled_minority], axis = 0).reset_index(drop = True)
+            
+            return X_resampled       
 
 
 
