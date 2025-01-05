@@ -25,6 +25,19 @@ clean_data_path = root_path / "data" / clean_data
 model_path = root_path / "models" / model_file
 results_path = root_path / "results"
 
+# # Paths
+# paths = {
+#     "data": "data/raw/data.csv",
+#     "models": "models/",
+#     "results": "results/",
+#     "metrics": "results/evaluation_metrics.json",
+#     "logs": "results/tuning_log.txt",
+# }
+
+
+
+
+
 print("project path:", root_path)
 print("raw data path:", raw_data_path)
 print("clean data path:", clean_data_path)
@@ -102,8 +115,46 @@ random_state = 123
 
 
 # ===============================
-# Model Hyperparameters
+# Models
 # ===============================
+  
+models = {
+    'RandomForest' : 'sklearn.ensemble.RandomForestClassifier',
+    'GradientBoosting' : 'sklearn.ensemble.GradientBoostingClassifier'
+}
+
+# ===============================
+# Hyperparameters
+# ===============================
+
+# -------------------------------
+# Model Hyperparameters
+# -------------------------------
+
+manual_hyperparameters = {
+    'RandomForest' : {'n_estimators': 100, 'max_depth' : 10, 'min_samples_split' : 5},
+    'GradientBoosting' : {'learning_rate' : 0.1, 'n_estimators' : 200, 'max_depth' : 5},     
+}
+
+hyperparameter_grids = {
+    'RandomForest' : {
+        'n_estimators' : [100, 200],
+        'max_depth' : [10, 20],
+        'min_samples_split' : [2, 5]
+        },
+    'GradientBoosting' : {
+        'learning_rate' : [0.01, 0.1],
+        'n_estimators' : [100, 200],
+        'max_depth' : [3, 5]
+    },
+}
+
+# -------------------------------
+# Enviroment Hyperparameters
+# -------------------------------
+
+# cross-validation configuration
+cv_folds = 5
 
 
 
