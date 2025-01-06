@@ -1,0 +1,16 @@
+## pendientes
+definir get_preprocessing_pipeline
+ajustarlo en el notebook de resultados
+
+seleccionar features to drop en config
+
+
+crear txt de logs
+
+
+ajustar los paths
+
+## hechos
+
+indagar bien como funciona cv para implementarlo en la parte final de results. 
+usarlo con train y test para ver resultados de overfit

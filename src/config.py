@@ -8,6 +8,7 @@
 # -------------------------------
 
 from pathlib import Path
+from scipy.stats import randint, uniform
 
 # -------------------------------
 # Paths
@@ -131,22 +132,43 @@ models = {
 # Model Hyperparameters
 # -------------------------------
 
-manual_hyperparameters = {
-    'RandomForest' : {'n_estimators': 100, 'max_depth' : 10, 'min_samples_split' : 5},
-    'GradientBoosting' : {'learning_rate' : 0.1, 'n_estimators' : 200, 'max_depth' : 5},     
+random_param_distributions = {
+    'RandomForest' : {
+        'n_estimators' : randint(50, 500),
+        'max_depth' : randint(5, 30),
+        'min_samples_split' : uniform(0.01, 0.1),
+        'min_samples_leaf' : uniform(0.01, 0.1)
+        },
+    'GradientBoosting' : {
+        'learning_rate' : uniform(0.01, 0.2),
+        'n_estimators' : randint(100, 300),
+        'max_depth' : randint(3, 15)
+    },
 }
 
-hyperparameter_grids = {
+grid_param_distributions = {
     'RandomForest' : {
-        'n_estimators' : [100, 200],
-        'max_depth' : [10, 20],
-        'min_samples_split' : [2, 5]
+        'n_estimators' : [100, 200, 300],
+        'max_depth' : [10, 15, 20],
+        'min_samples_split' : [0.05, 0.1],
+        'min_samples_leaf' : [0.02, 0.05]
         },
     'GradientBoosting' : {
         'learning_rate' : [0.01, 0.1],
         'n_estimators' : [100, 200],
         'max_depth' : [3, 5]
     },
+}
+
+manual_hyperparameters = {
+    'RandomForest' : {
+        'n_estimators': 100, 
+        'max_depth' : 10, 
+        'min_samples_split' : 5},
+    'GradientBoosting' : {
+        'learning_rate' : 0.1, 
+        'n_estimators' : 200, 
+        'max_depth' : 5},     
 }
 
 # -------------------------------
@@ -156,7 +178,13 @@ hyperparameter_grids = {
 # cross-validation configuration
 cv_folds = 5
 
+# optimization scoring
+scoring_methods = {
+    'balanced' : 'roc_auc',
+    'default' : 'accuracy'
+}
 
+scoring_mode = 'balanced'
 
 
 # ===============================
