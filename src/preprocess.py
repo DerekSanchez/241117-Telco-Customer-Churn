@@ -37,6 +37,53 @@ class MissingColumnError(Exception):
         self.message = f"The following missing columns are missing: {', '.join(missing_columns)}"
         super().__init__(self.message)
 
+
+# ===============================
+# Target Variable Preprocessing
+# ===============================
+
+class TargetPreprocess(BaseEstimator, TransformerMixin):
+    """
+    Class to preprocess the target variable
+    It will perform:
+        - encoding
+    """
+    def __init__(self):
+       self.mapping = cf.target_mapping
+    
+    def fit(self, y, X = None):
+        """
+        Fits necessary transformations to use y in a Machine Learning model
+        Parameters:
+            - y (pd.Series): Target Variable
+            - X (pd.DataFrame): Associated Features (optional)
+        """
+    
+        # check if expected values are in y
+        unique_values = set(y.unique())
+        missing_values = [val for val in self.mapping.keys() if val not in unique_values]
+        
+        if missing_values:
+            raise ValueError(f'The following expected values are not in y: {missing_values}')
+        
+        return self
+    def transform(self, y):
+        """
+        Encode target variable
+        
+        Parameters
+            - y (pd.Series): Target variable
+        
+        Return:
+            pd.Series: Encoded target variables
+        """
+        
+        # map target
+        return y.map(self.mapping)
+        
+        
+        
+        
 # ===============================
 # Feature Selection
 # ===============================
@@ -85,7 +132,7 @@ class DataCleaning(BaseEstimator, TransformerMixin):
     Data Cleaning Class:
         - Data type adjustment
         - Handling inconsisting labels
-        - Stadardize columns in inconsisten formatting
+        - Stadardize columns in inconsistent formatting
     """
     
     def __init__(self):

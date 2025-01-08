@@ -41,8 +41,23 @@ print("results path", paths['results'])
 
 
 # ===============================
-# Preprocessing
+# Target Preprocessing
 # ===============================
+
+# -------------------------------
+# Encoding
+# -------------------------------
+
+target_mapping = {
+    'Yes' : 1,
+    'No': 0
+}
+
+# ===============================
+# Feature Preprocessing
+# ===============================
+
+
 
 # -------------------------------
 # Feature Selection
