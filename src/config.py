@@ -21,29 +21,23 @@ model_file = 'model.pkl'
 current_path = Path(__file__).resolve().parent
 root_path = current_path.parent
 
-raw_data_path = root_path / "data" / raw_data
-clean_data_path = root_path / "data" / clean_data
-model_path = root_path / "models" / model_file
-results_path = root_path / "results"
-
-# # Paths
-# paths = {
-#     "data": "data/raw/data.csv",
-#     "models": "models/",
-#     "results": "results/",
-#     "metrics": "results/evaluation_metrics.json",
-#     "logs": "results/tuning_log.txt",
-# }
-
-
-
-
+paths = {
+    # folders
+    'data' : root_path / 'data',
+    'notebooks' : root_path / 'notebooks',
+    'results' : root_path / 'results',
+    'models' : root_path / 'models',
+    'source' : root_path / 'src',
+    # specific files
+    'data_raw' : root_path / 'data' / 'raw_data.csv',
+    'model' : root_path / 'models' / 'model.pkl',
+    'logs' : root_path / 'results' / 'log.txt'   
+}
 
 print("project path:", root_path)
-print("raw data path:", raw_data_path)
-print("clean data path:", clean_data_path)
-print("model path", model_path)
-print("results path", results_path)
+print("raw data path:", paths['data_raw'])
+print("model path", paths['model'])
+print("results path", paths['results'])
 
 
 # ===============================

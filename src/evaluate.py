@@ -1,4 +1,5 @@
 import json
+import src.utils as ut
 from sklearn.metrics import (
     accuracy_score,
     roc_auc_score,
@@ -22,6 +23,10 @@ def evaluate_model(model, X_test, y_test):
     Returns:
         - dict: Dictionary with evaluation metrics
     """
+    
+    # document log on model testing
+    
+    ut.write_log(f'Start model evaluation')
     
     # predict on the test set
     y_pred = model.predict(X_test)
@@ -51,6 +56,10 @@ def evaluate_model(model, X_test, y_test):
         'classification_report' : report
     }
     
+    
+    ut.write_log(f"Main score ({results['primary score']['metric']}): {results['primary score']['value']}")
+    ut.write_log(f'Model evaluation completed')
+    
     return results
 
 def save_metrics(metrics, model_name):
@@ -61,8 +70,8 @@ def save_metrics(metrics, model_name):
         - metrics (dict): Testing results
         - model_name (str): Name of evaluated model
     """
-    # path to save metrics OJOOO DEFINIR ESTO YA
-    metrics_path = None
+    # path to save metrics
+    metrics_path = f"{paths['models']}/{model_name}_metrics.json"
     
     with open(metrics_path, 'w') as file:
         json.dump(metrics, file, indent = 4)

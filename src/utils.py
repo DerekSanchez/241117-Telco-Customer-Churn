@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from src.config import paths
+import os
+from datetime import datetime
 from IPython.display import display
 
 # loads data from a path
@@ -269,3 +272,22 @@ def format_cell(val):
 # Función para centrar
 def center_align(val):
     return 'text-align: center;'
+
+def write_log(message, log_path = paths['logs']):
+    """
+    Writes messages in a log file
+    
+    Parameters:
+        - message (str): Message to register
+        - log_path(str): Path of log file
+    """
+    
+    # check if directory exists
+    os.makedirs(os.path.dirname(log_path), exist_ok = True)
+    
+    # write in the file
+    with open(log_path, 'a') as log_file:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M%:%S')
+        log_file.write(f'[{timestamp}] {message}\n')
+    
+    print(f'Log has been registered: {message}')

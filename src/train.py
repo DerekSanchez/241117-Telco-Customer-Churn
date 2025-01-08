@@ -1,4 +1,5 @@
 import src.config as cf
+import src.utils as ut
 import numpy as np
 from importlib import import_module
 from sklearn.model_selection import StratifiedKFold, GridSearchCV, RandomizedSearchCV
@@ -15,8 +16,8 @@ def get_model(model_name):
 
 def train_model(model_name, X_train, y_train, mode = 'manual', n_inter_random = 50):
     """
-    Train a generic sklearn model.
-    This function as the flexibility to tune the hyperparameters using
+    Trains a generic sklearn model.
+    This function has the flexibility to tune the hyperparameters using
         - manual tuning 
         - grid search 
         - randomized search
@@ -32,6 +33,10 @@ def train_model(model_name, X_train, y_train, mode = 'manual', n_inter_random = 
         dict: Dictionary with model trained, using best parameters and metrics of CV
     """
     
+    # document a log of the model training
+    ut.write_log(f'Start training of model: {model_name}')
+    
+    # settings
     model = get_model(model_name)
     scoring = cf.scoring_methods[cf.scoring_mode] # define scoring metric
     scorer = make_scorer(roc_auc_score if scoring == 'roc_auc' else accuracy_score) # allows personalization of metric through variable score instance
@@ -148,6 +153,13 @@ def train_model(model_name, X_train, y_train, mode = 'manual', n_inter_random = 
         # get best results
         results['best_model'] = random_search.best_estimator_
         results['best_params'] = random_search.best_params_
+    
+    # document training results log
+    ut.write_log(f"Best Hyperparameters: {results['best_params']}")
+    ut.write_log(f"CV Train Score: {results['cv_train_score']}")
+    ut.write_log(f"CV Validation Score: {results['cv_val_score']}")
+    ut.write_log(f"Training complete for model: {model_name}")
+    
     
     return results
         
