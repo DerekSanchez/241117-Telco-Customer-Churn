@@ -1,0 +1,79 @@
+[2025-01-10 19:17:14] Training Random Forest Classifier
+[2025-01-10 19:17:14] Start training of model: RandomForest
+[2025-01-10 19:18:38] Training Random Forest Classifier
+[2025-01-10 19:18:38] Start training of model: RandomForest
+[2025-01-10 19:18:53] Training Random Forest Classifier
+[2025-01-10 19:18:53] Start training of model: RandomForest
+[2025-01-10 19:28:41] Training Random Forest Classifier
+[2025-01-10 19:28:41] Start training of model: RandomForest
+[2025-01-10 19:37:41] Training Random Forest Classifier
+[2025-01-10 19:37:41] Start training of model: RandomForest
+[2025-01-10 19:39:22] Best Hyperparameters: {'max_depth': 10, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 200}
+[2025-01-10 19:39:22] CV Train Score: {'mean': 0.8436039941475266, 'std': 0.004224256059596326}
+[2025-01-10 19:39:22] CV Validation Score: {'mean': 0.83953447537721, 'std': None}
+[2025-01-10 19:39:22] Training complete for model: RandomForest
+[2025-01-10 19:47:57] Start model evaluation
+[2025-01-10 19:47:57] Main score (roc_auc): 0.8447938286114375
+[2025-01-10 19:47:57] Model evaluation completed
+[2025-01-10 19:48:24] Start model evaluation
+[2025-01-10 19:48:24] Main score (roc_auc): 0.8447938286114375
+[2025-01-10 19:48:24] Model evaluation completed
+[2025-01-10 20:35:28] Training Random Forest Classifier
+[2025-01-10 20:35:28] Start training of model: RandomForest
+[2025-01-10 20:37:27] Best Hyperparameters: {'max_depth': 15, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 200}
+[2025-01-10 20:37:27] CV Train Score: {'mean': 0.8437111609891599, 'std': 0.004251826064045555}
+[2025-01-10 20:37:27] CV Validation Score: {'mean': 0.8399705683410289, 'std': None}
+[2025-01-10 20:37:27] Training complete for model: RandomForest
+[2025-01-10 20:38:30] Training Random Forest Classifier
+[2025-01-10 20:38:30] Start training of model: RandomForest
+[2025-01-10 20:40:29] Best Hyperparameters: {'max_depth': 15, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 100}
+[2025-01-10 20:40:29] CV Train Score: {'mean': 0.8435938326421744, 'std': 0.004295234796538445}
+[2025-01-10 20:40:29] CV Validation Score: {'mean': 0.8395217126206311, 'std': None}
+[2025-01-10 20:40:29] Training complete for model: RandomForest
+[2025-01-10 20:42:09] Training Random Forest Classifier
+[2025-01-10 20:42:09] Start training of model: RandomForest
+[2025-01-10 20:44:07] Best Hyperparameters: {'max_depth': 20, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 300}
+[2025-01-10 20:44:07] CV Train Score: {'mean': 0.8436820355824215, 'std': 0.004268010733637688}
+[2025-01-10 20:44:07] CV Validation Score: {'mean': 0.8397289682950593, 'std': None}
+[2025-01-10 20:44:07] Training complete for model: RandomForest
+[2025-01-10 20:44:30] Training Random Forest Classifier
+[2025-01-10 20:44:30] Start training of model: RandomForest
+[2025-01-10 20:46:29] Best Hyperparameters: {'max_depth': 10, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 100}
+[2025-01-10 20:46:29] CV Train Score: {'mean': 0.8436851604591429, 'std': 0.004274284084737741}
+[2025-01-10 20:46:29] CV Validation Score: {'mean': 0.8401285473510969, 'std': None}
+[2025-01-10 20:46:29] Training complete for model: RandomForest
+[2025-01-10 20:47:12] Training Random Forest Classifier
+[2025-01-10 20:47:12] Start training of model: RandomForest
+[2025-01-10 20:49:14] Best Hyperparameters: {'max_depth': 15, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 300}
+[2025-01-10 20:49:14] CV Train Score: {'mean': 0.8436127111009147, 'std': 0.004276523444424333}
+[2025-01-10 20:49:14] CV Validation Score: {'mean': 0.8394202214701817, 'std': None}
+[2025-01-10 20:49:14] Training complete for model: RandomForest
+[2025-01-10 20:49:14] classification report generated
+[2025-01-10 20:51:57] Training Random Forest Classifier
+[2025-01-10 20:51:57] Start training of model: RandomForest
+[2025-01-10 20:53:48] Best Hyperparameters: {'max_depth': 10, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 100}
+[2025-01-10 20:53:48] CV Train Score: {'mean': 0.8436767636936594, 'std': 0.004246105652313766}
+[2025-01-10 20:53:48] CV Validation Score: {'mean': 0.8396067545189112, 'std': None}
+[2025-01-10 20:53:48] Training complete for model: RandomForest
+[2025-01-10 20:53:49] classification report generated
+[2025-01-10 20:58:31] Training Random Forest Classifier
+[2025-01-10 20:58:31] Start training of model: RandomForest
+[2025-01-10 21:00:21] Best Hyperparameters: {'max_depth': 20, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 200}
+[2025-01-10 21:00:21] CV Train Score: {'mean': 0.8436976475159232, 'std': 0.004261194958189418}
+[2025-01-10 21:00:21] CV Validation Score: {'mean': 0.8400472125406158, 'std': None}
+[2025-01-10 21:00:21] Training complete for model: RandomForest
+[2025-01-10 21:00:22] classification report generated
+[2025-01-10 21:02:17] Training Random Forest Classifier
+[2025-01-10 21:02:17] Start training of model: RandomForest
+[2025-01-10 21:04:12] Best Hyperparameters: {'max_depth': 15, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 200}
+[2025-01-10 21:04:12] CV Train Score: {'mean': 0.8437135446626944, 'std': 0.00429479596588364}
+[2025-01-10 21:04:12] CV Validation Score: {'mean': 0.839875388212157, 'std': None}
+[2025-01-10 21:04:12] Training complete for model: RandomForest
+[2025-01-10 21:04:12] classification report generated
+[2025-01-10 21:05:48] Training Random Forest Classifier
+[2025-01-10 21:05:48] Start training of model: RandomForest
+[2025-01-10 21:07:47] Best Hyperparameters: {'max_depth': 15, 'min_samples_leaf': 0.02, 'min_samples_split': 0.05, 'n_estimators': 300}
+[2025-01-10 21:07:47] CV Train Score: {'mean': 0.8437564810655098, 'std': 0.004273775630016334}
+[2025-01-10 21:07:47] CV Validation Score: {'mean': 0.8399042619203392, 'std': None}
+[2025-01-10 21:07:47] Training complete for model: RandomForest
+[2025-01-10 21:07:47] classification report generated

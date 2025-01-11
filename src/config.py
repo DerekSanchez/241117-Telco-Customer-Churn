@@ -68,7 +68,9 @@ num_features_to_drop = [
 ]
 
 cat_features_to_drop = [
-    
+    'customerID',
+    'Dependents',
+    'Partner'
 ]
 
 # -------------------------------

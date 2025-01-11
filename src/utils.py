@@ -287,7 +287,7 @@ def write_log(message, log_path = paths['logs']):
     
     # write in the file
     with open(log_path, 'a') as log_file:
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M%:%S')
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         log_file.write(f'[{timestamp}] {message}\n')
     
     print(f'Log has been registered: {message}')

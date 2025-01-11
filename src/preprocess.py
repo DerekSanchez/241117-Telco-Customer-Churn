@@ -37,7 +37,6 @@ class MissingColumnError(Exception):
         self.message = f"The following missing columns are missing: {', '.join(missing_columns)}"
         super().__init__(self.message)
 
-
 # ===============================
 # Target Variable Preprocessing
 # ===============================
@@ -81,9 +80,6 @@ class TargetPreprocess(BaseEstimator, TransformerMixin):
         # map target
         return y.map(self.mapping)
         
-        
-        
-        
 # ===============================
 # Feature Selection
 # ===============================
@@ -119,7 +115,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
         if missing_columns:
             raise MissingColumnError(missing_columns)
         
-        X_copy = X_copy.drop(columns = self.dropped_features, errors = 'ignore')
+        X_copy = X_copy.drop(columns = self.dropped_features, errors = 'ignore').reset_index()
         
         return X_copy
 
@@ -247,7 +243,7 @@ class OutlierDetector(BaseEstimator, TransformerMixin):
     - allows the user to identify or eliminate outliers
     """
     
-    def __init__(self, multiplier = 1.5 , action = 'remove'):
+    def __init__(self, multiplier = 1.5 , action = 'cap'):
         """
         Parameters:
             multiplier (float): multiplier for IQR. default is 1.5
