@@ -32,8 +32,11 @@ def generate_classification_report(y_test, y_pred):
     
     accuracy = report_df.loc['accuracy', 'precision']
     report_df = report_df.drop(index = 'accuracy')
-
+    
+    print('Classification report')
     display(report_df)
+    
+    print(f'Test Accuracy: {accuracy:.2%}')
     # document a log
     ut.write_log(f'classification report generated')
     
@@ -47,7 +50,10 @@ def plot_confusion_matrix(y_test, y_pred, labels = None):
         - y_pred (pd.Series): Predicted values
         - labels (list, optional): Class labels
     """
-    
+    # if labels not specified, generate automatically
+    if labels is None:
+        labels = sorted(set(y_test).union(set(y_pred)))
+
     conf_matrix = confusion_matrix(y_test, y_pred, labels = labels)
     sns.heatmap(conf_matrix, annot = True, fmt = 'd', cmap = 'Blues', xticklabels = labels, yticklabels = labels)
     plt.xlabel('Predicted')

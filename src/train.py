@@ -68,12 +68,12 @@ def train_model(model_name, X_train, y_train, mode = 'manual', n_inter_random = 
             model.fit(X_train_cv, y_train_cv)
             
             # evaluate model on both train and validation
-            train_scores = scorer(model, X_train_cv, y_train_cv)
-            val_scores = scorer(model, X_val_cv, y_val_cv)
+            train_scores_temp = scorer(model, X_train_cv, y_train_cv)
+            val_scores_temp = scorer(model, X_val_cv, y_val_cv)
             
             # append results on separate lists
-            train_scores.append(train_scores)
-            val_scores.append(val_scores)
+            train_scores.append(train_scores_temp)
+            val_scores.append(val_scores_temp)
         
         # calculate statistics for evaluation results
         results['cv_train_score'] = {
