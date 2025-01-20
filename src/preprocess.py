@@ -143,17 +143,10 @@ class DataCleaning(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X_copy = X.copy()
         
-        required_columns = [
-            'TotalCharges'
-        ]
-        
-        missing_columns = [col for col in required_columns if col not in X_copy.columns]
-        
-        if missing_columns:
-            raise MissingColumnError(missing_columns)
         
         # adjust data type
-        X_copy['TotalCharges'] = pd.to_numeric(X_copy['TotalCharges'], errors = 'coerce')
+        if 'TotalCharges' in X_copy.columns:
+            X_copy['TotalCharges'] = pd.to_numeric(X_copy['TotalCharges'], errors = 'coerce')
 
         # adjust spaces in string columns
         object_columns = X_copy.select_dtypes(include = 'object').columns
@@ -190,45 +183,37 @@ class FeatureEngineering(BaseEstimator, TransformerMixin):
         """ 
         X_copy = X.copy()
         
-        # verify if needed columns exist in data
-        required_columns = [
-            'tenure',
-            'MonthlyCharges',
-            'InternetService',
-            'MultipleLines',
-            'OnlineSecurity'
-        ]
-        missing_columns = [col for col in required_columns if col not in X_copy.columns]
-        
-        if missing_columns:
-            raise MissingColumnError(missing_columns)
-        
         # create new column: TotalCost
-        X_copy['TotalCost'] = X_copy['tenure'] * X_copy['MonthlyCharges']
+        if 'tenure' in X_copy.columns and 'MonthlyCharges' in X_copy.columns:
+            X_copy['TotalCost'] = X_copy['tenure'] * X_copy['MonthlyCharges']
         
         # create new column: RevenueAdjustment
-        X_copy['RevenueAdjustment'] = X_copy['TotalCharges'] - X_copy['TotalCost']
+        if 'TotalCharges' in X_copy.columns and 'TotalCost' in X_copy.columns:
+            X_copy['RevenueAdjustment'] = X_copy['TotalCharges'] - X_copy['TotalCost']
         
         # create new column: log monthly charges
-        X_copy['LogMonthlyCharges'] = X_copy['MonthlyCharges'].apply(
+        if 'MonthlyCharges' in X_copy.columns:
+            X_copy['LogMonthlyCharges'] = X_copy['MonthlyCharges'].apply(
             lambda x: np.log(x) if pd.notnull(x) and x > 0 else 0)
         
         # column values simplification: InternetService
-        X_copy['InternetService'] = X_copy['InternetService'].replace(
+        if 'InternetService' in X_copy.columns:
+            X_copy['InternetService'] = X_copy['InternetService'].replace(
             {'Fiber optic': 'Yes',
              'DSL' : 'Yes'}
             )
         
         # column values simplification: MultipleLines
-        X_copy['MultipleLines'] = X_copy['MultipleLines'].replace(
+        if 'MultipleLines' in X_copy.columns:
+            X_copy['MultipleLines'] = X_copy['MultipleLines'].replace(
             {'No phone service': 'No'}
             )
         
         # column values simplification: OnlineSecurity
-        X_copy['OnlineSecurity'] = X_copy['OnlineSecurity'].replace(
+        if 'OnlineSecurity' in X_copy.columns:
+            X_copy['OnlineSecurity'] = X_copy['OnlineSecurity'].replace(
             {'No internet service': 'No'}
             )
-        
         
         return X_copy
 
@@ -257,7 +242,7 @@ class OutlierDetector(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y = None):
         """
-        Fits necessary statisctis (mean and sd)
+        Fits necessary statistics (mean and sd)
         """
         numerical_cols = X.select_dtypes(include = ['int64', 'float64']).columns
         self.q1 = X[numerical_cols].quantile(0.25)

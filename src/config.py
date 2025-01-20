@@ -70,7 +70,10 @@ num_features_to_drop = [
 cat_features_to_drop = [
     'customerID',
     'Dependents',
-    'Partner'
+    'Partner',
+    'gender',
+    'PhoneService',
+    'MultipleLines'
 ]
 
 # -------------------------------
@@ -122,7 +125,7 @@ nominal_columns = [
 # Data Split
 # -------------------------------
 
-test_size = 0.2
+test_size = 0.3
 random_state = 123
 
 
@@ -132,7 +135,9 @@ random_state = 123
   
 models = {
     'RandomForest' : 'sklearn.ensemble.RandomForestClassifier',
-    'GradientBoosting' : 'sklearn.ensemble.GradientBoostingClassifier'
+    'GradientBoosting' : 'sklearn.ensemble.GradientBoostingClassifier',
+    'LogisticRegression' : 'sklearn.linear_model.LogisticRegression',
+    'SVM' : 'sklearn.svm.SVC'
 }
 
 # ===============================
@@ -149,37 +154,71 @@ random_param_distributions = {
         'max_depth' : randint(5, 30),
         'min_samples_split' : uniform(0.01, 0.1),
         'min_samples_leaf' : uniform(0.01, 0.1)
-        },
+    },
     'GradientBoosting' : {
         'learning_rate' : uniform(0.01, 0.2),
         'n_estimators' : randint(100, 300),
         'max_depth' : randint(3, 15)
     },
+    'LogisticRegression' : {
+        'C' : uniform(0.01, 10),
+        'penalty' : ['l1', 'l2', 'elasticnet', 'none'],
+        'solver' : ['saga', 'liblinear'] 
+    },
+    'SVM' : {
+        'C' : uniform(0.01, 10),
+        'kernel' : ['lienar', 'poly', 'rbf', 'sigmoid'],
+        'gamma' : uniform(0.001, 1)
+    }
 }
 
 grid_param_distributions = {
     'RandomForest' : {
-        'n_estimators' : [100, 200, 300],
-        'max_depth' : [10, 15, 20],
-        'min_samples_split' : [0.05, 0.1],
-        'min_samples_leaf' : [0.02, 0.05]
-        },
+        'n_estimators' : [400, 427, 450],
+        'max_depth' : [12, 17, 22],
+        'min_samples_split' : [0.01, 0.015, 0.02],
+        'min_samples_leaf' : [0.01, 0.015, 0.02]
+    },
     'GradientBoosting' : {
         'learning_rate' : [0.01, 0.1],
         'n_estimators' : [100, 200],
         'max_depth' : [3, 5]
     },
+    'LogisticRegression' : {
+        'C' : [0.01, 0.1, 1, 10],
+        'penalty' : ['l1', 'l2'],
+        'solver' : ['liblinear', 'saga']   
+    },
+    'SVM' : {
+        'C' : [0.01, 0.1, 1, 10],
+        'kernel' : ['linear', 'rbf'],
+        'gamma' : ['scale', 'auto', 0.001, 0.01, 0.1]
+    }
 }
 
 manual_hyperparameters = {
     'RandomForest' : {
-        'n_estimators': 100, 
-        'max_depth' : 10, 
-        'min_samples_split' : 5},
+        'n_estimators': 427, 
+        'max_depth' : 17, 
+        'min_samples_split' : 0.014303,
+        'min_samples_leaf': 0.015765
+    },
     'GradientBoosting' : {
-        'learning_rate' : 0.1, 
-        'n_estimators' : 200, 
-        'max_depth' : 5},     
+        'learning_rate' : 0.01, 
+        'n_estimators' : 100, 
+        'max_depth' : 4
+    },
+    'LogisticRegression' : {
+        'C' : 5.20485,
+        'penalty' : 'l1',
+        'solver' : 'saga',
+        'max_iter' : 500
+    },
+    'SVM' : {
+        'C' : 1.0,
+        'kernel' : 'rbf',
+        'gamma' : 'scale'
+    }
 }
 
 # -------------------------------
@@ -187,7 +226,7 @@ manual_hyperparameters = {
 # -------------------------------
 
 # cross-validation configuration
-cv_folds = 5
+cv_folds = 10
 
 # optimization scoring
 scoring_methods = {

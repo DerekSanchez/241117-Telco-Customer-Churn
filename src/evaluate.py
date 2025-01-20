@@ -6,15 +6,11 @@ import seaborn as sns
 import src.utils as ut
 from src.config import scoring_methods, scoring_mode, paths
 from sklearn.metrics import (
-    accuracy_score,
-    roc_auc_score,
-    f1_score,
-    precision_score,
-    recall_score,
     classification_report,
     confusion_matrix,
     roc_curve,
-    auc
+    auc,
+    precision_recall_curve
 )
 
 def generate_classification_report(y_test, y_pred):
@@ -84,6 +80,20 @@ def plot_roc_curve(y_test, y_pred_proba):
     
     # document a log
     ut.write_log(f'roc curve displayed')
+    
+def plot_precision_recall(y_test, y_pred_proba):
+    """
+    Plot a curve of precision vs recall
+    
+    Parameters:
+        - y_test (pd.Series): Real values of target variable
+        - y_pred_proba (np.array): Probability predictions
+    """
+    precision, recall, _ = precision_recall_curve(y_test, y_pred_proba)
+    plt.plot(recall, precision)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.show()
 
 def save_metrics(metrics, model_name):
     """
