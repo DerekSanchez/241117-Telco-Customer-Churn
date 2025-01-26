@@ -168,7 +168,8 @@ random_param_distributions = {
     'SVM' : {
         'C' : uniform(0.01, 10),
         'kernel' : ['lienar', 'poly', 'rbf', 'sigmoid'],
-        'gamma' : uniform(0.001, 1)
+        'gamma' : uniform(0.001, 1),
+        'probability' : True
     }
 }
 
@@ -192,7 +193,8 @@ grid_param_distributions = {
     'SVM' : {
         'C' : [0.01, 0.1, 1, 10],
         'kernel' : ['linear', 'rbf'],
-        'gamma' : ['scale', 'auto', 0.001, 0.01, 0.1]
+        'gamma' : ['scale', 'auto', 0.001, 0.01, 0.1],
+        'probability' : True
     }
 }
 
@@ -217,7 +219,8 @@ manual_hyperparameters = {
     'SVM' : {
         'C' : 1.0,
         'kernel' : 'rbf',
-        'gamma' : 'scale'
+        'gamma' : 'scale',
+        'probability' : True
     }
 }
 

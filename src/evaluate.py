@@ -6,6 +6,11 @@ import seaborn as sns
 import src.utils as ut
 from src.config import scoring_methods, scoring_mode, paths
 from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
     classification_report,
     confusion_matrix,
     roc_curve,
@@ -33,6 +38,7 @@ def generate_classification_report(y_test, y_pred):
     display(report_df)
     
     print(f'Test Accuracy: {accuracy:.2%}')
+   
     # document a log
     ut.write_log(f'classification report generated')
     
@@ -111,4 +117,32 @@ def save_metrics(metrics, model_name):
     
     print(f'Metrics saved on {metrics_path}')
 
+def get_test_metrics(model, X_test, y_test):
+    """
+    Calculates relevant metrics for a model on the test set
     
+    Parameters:
+        - model: Trained model
+        - X_test (pd.DataFrame): Test set features
+        - y_test (pd.Series): Test set target
+        
+    Returns:
+        - dict: Dictionary with calculated metrics
+    """
+    # predictions
+    y_pred = model.predict(X_test)
+    y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
+    
+    # main metrics
+    metrics = {
+        'accuracy' : accuracy_score(y_test, y_pred),
+        'precision' : precision_score(y_test, y_pred, average = 'binary', zero_division = 0),
+        'recall' : recall_score(y_test, y_pred, average = 'binary', zero_division = 0),
+        'f1_score' : f1_score(y_test, y_pred, average = 'binary')
+    }
+    
+    # check if AUC-ROC is available
+    if y_proba is not None:
+        metrics['roc_auc'] = roc_auc_score(y_test, y_proba)
+    
+    return metrics
