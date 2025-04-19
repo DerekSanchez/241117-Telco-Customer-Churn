@@ -2,7 +2,7 @@
 
 ## Description
 
-This project builds and implements multiple binary classification in order to predict customer churn in a realistic dataset conditions using the Telco Dataset
+This project builds and implements a binary classification model in order to predict customer churn in realistic data conditions using the Telco dataset
 
 ## Folder Structure
 - data
