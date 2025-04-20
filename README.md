@@ -2,6 +2,8 @@
 
 ## Description
 
+**For an executive results deck, check 'results' folder**
+
 This project builds and implements a binary classification model in order to predict customer churn in realistic data conditions using the Telco dataset
 
 ## Folder Structure
