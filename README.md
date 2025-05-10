@@ -2,9 +2,10 @@
 
 ## Description
 
-**For an executive results deck, check 'results' folder**
+**For an executive results deck, check 'results' folder or click [here](https://drive.google.com/file/d/1TAr-w6aZzJ2rwfj52C9uANVQrmCGZy2D/view?usp=sharing)**
 
 This project builds and implements a binary classification model in order to predict customer churn in realistic data conditions using the Telco dataset
+The original dataset can be found [here](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 
 ## Folder Structure
 - data
